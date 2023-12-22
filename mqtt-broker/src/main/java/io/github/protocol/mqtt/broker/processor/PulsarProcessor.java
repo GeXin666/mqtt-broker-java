@@ -180,9 +180,12 @@ public class PulsarProcessor extends AbstractProcessor {
 
         wLock.lock();
         try {
+            //查询mqttTopicKey频道是否已经存在订阅
             Consumer<byte[]> consumer = consumerMap.get(mqttTopicKey);
             if (consumer == null) {
+                //不存在则创建一个新的订阅
                 consumer = createConsumer(ctx, mqttSessionKey.getUsername(), topic);
+                //加入到订阅集合mqttSessionKey -> 订阅频道a，频道b，频道c...
                 sessionConsumerMap.compute(mqttSessionKey, (mqttSessionKey1, mqttTopicKeys) -> {
                     if (mqttTopicKeys == null) {
                         mqttTopicKeys = new ArrayList<>();
